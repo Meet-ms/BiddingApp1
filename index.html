@@ -16,20 +16,28 @@
     <script>
         $(function () {
             var socket = io();
+            var userId = -1;
             $('#send').click(function(){
               $('#messages').append($('<li>').text($('#m').val()));
               var mesgObj = {
-                userID : userInfo.UserBasicDetails.UserId,
-                message : $('#m').val()
-              };
+                UserId : userId,
+                ProductId : "1",
+                BidValue : $('#m').val()
+              }
               socket.emit('Bidding Starts', mesgObj);
               $('#m').val('');
               $('div[data-type="input"]').text('');
               return false;
             });
+            socket.on('UserId', function (id) {              
+              userId = id;
+            })
             socket.on('Bidding Starts', function(msg){
-              $('#messages').append($('<li>').text(msg.message));
-                twemoji.parse(document.body)
+              msg.forEach(element => {
+                $('#messages').append($('<li>').text(msg.BidValue));
+              });
+              
+                
             });
             $('#button').on('click',function (event) {
                 socket.emit('button Event','true');
@@ -116,7 +124,7 @@
             </div>
             <div class="chat-header clearfix" style="background-color: #545050;color: #fff;padding: 0px 20px 5px 20px;">
                 <div class="chat-about">
-                    <div class="chat-with">Bit Closing Time</div>
+                    <div class="chat-with">Bid Closing Time</div>
                     <div class="chat-num-messages">05:30:00 PM</div>                  
                 </div>
                 <!-- <div class="chat-right" style="text-align: center;font-weight: 600;">
@@ -130,7 +138,7 @@
             <div style="background-color: #323232">
                 <div class="chat-with">Enter Bid Value</div>
                 <div style="overflow: hidden; padding-right: .5em;float:left;">                                    
-                    <input type="text" style="width: 100%;" />                   
+                    <input type="text" style="width: 100%;" class="form-control" id="m"/>                   
                 </div>​
                 <div>
                 <button class="" id="send">BID</button>

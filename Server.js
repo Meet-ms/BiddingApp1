@@ -9,7 +9,7 @@ app.get('/',(req,res)=>{
     res.sendFile(__dirname+"/index.html",{"Content-Type": "text/html"});
 });
 
-http.listen(3031,()=>{
+http.listen(3032,()=>{
     console.log("Host is active on 3031");
     // message.sendEmail({});
 });
@@ -21,14 +21,14 @@ io.on('connection',(socket)=>
     // socket.join('hello');
     // console.log(socket.rooms);
     console.log('a user is connected');
-    socket.broadcast.emit("UserId", uuid());
+    socket.emit("UserId", uuid());
     socket.on('Bidding Starts',(mesg)=>
     {
         console.log('\n');
         console.log('Current users are :%o',io.rooms);
         // console.log('\n');
-        message.post(mesg);
-        socket.broadcast.emit("",mesg);        
+        var data = message.post(mesg);
+        socket.emit("Azure Data",data);        
         // socket.broadcast.emit(mesg);
     });
     socket.on('raiseTicket',(mesg)=>{

@@ -1,9 +1,11 @@
 var mongoose = require('mongoose');
+var ajax = require('ajax-request');
 var azureSearch = require('azure-search');
-var uuid = require('uuid/v1')
+var uuid = require('uuid/v1');
+
 var azureSearchclient = azureSearch({
   url: "https://bidding.search.windows.net",
-  key: "7060EA088BE1235D54E84A666EBA96D1",
+  key: "7060EA088BE1235D54E84A666EBA96D1"
   //version: "2016-09-01", // optional, can be used to enable preview apis
 //   headers: { // optional, for example to enable searchId in telemetry in logs
 //     "x-ms-azs-return-searchid": "true",
@@ -63,17 +65,6 @@ var searchSchema = {
     defaultScoringProfile: null,
     corsOptions: null };
 
-//Create Index
-// azureSearchclient.createIndex(searchSchema,(err, success)=>{
-//     if (err) {
-//         console.log("Error occured while creating index: "+ err);
-//     }
-//     else
-//     {
-//         console.log("Index Created");
-//     }
-
-// });
 
 var model = null;
 promise.then((connectionObj)=>{
@@ -88,6 +79,10 @@ promise.then((connectionObj)=>{
     console.log('Connection failed with error :'+err);
 });
 
+var headers = {
+    'api-key':       '7060EA088BE1235D54E84A666EBA96D1',
+    'Content-Type':     'application/json'
+};
 
 module.exports = {
     post : (req)=>{
@@ -98,41 +93,22 @@ module.exports = {
             BidValue : req.BidValue,
             dateCreated : new Date().toJSON()
         };
-        // model.create(messageObj,(err,success)=>{
-        //     if (err) 
-        //     {
-        //         console.log('Record Insert failed :'+err);
-        //         return false;
-        //     }
-        //     return true;
-        // });
         azureSearchclient.addDocuments('biddingindex', [BiddingObj], function(err, results){
             if (err) {
-                console.log('Failed to add document: '+err);
+                console.log('Failed to add document: '+JSON.stringify(err));
             }
             else
             {
-                console.log('Document Added')
+                console.log('Document Added');
+                // search the index (note that multiple arguments can be passed as an array)
+                ajax.download({
+                    url: "https://bidding.search.windows.net/indexes/biddingindex/docs?search=*&$top=5&$orderby=BidValue desc&api-version=2019-05-06",
+                    method: 'GET'
+                },function (err, data){
+                    return data;
+                }
+                )
             }
         });
     }
-}
-
-function GenerateHTMLForChatHistory(mailObj) {
-    var html = '<p>'+mailObj.description+'</p></br></br>';
-    if (mailObj.chatHistory.length != 0) 
-    {
-        html += '<p>Chat History is as Follows: </p>'
-        mailObj.chatHistory.forEach((element) => {
-            if (element.isOtherUser) 
-            {
-                html += '<p><strong>Support Team</strong> : '+element.commentTxt+'</p>'
-            }
-            else
-            {
-                html += '<p><strong>'+mailObj.userInfo.UserBasicDetails.UserName+'</strong> : '+element.commentTxt+'</p>'
-            }
-        });
-    }    
-    return html;
 }
