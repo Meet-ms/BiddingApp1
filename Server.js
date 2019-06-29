@@ -3,6 +3,7 @@ var app = require("express")();
 var http = require('http').Server(app);
 var io = require("socket.io")(http);
 var message = require('./BusinessLogic/Bidding');
+var uuid = require('uuid');
 
 app.get('/',(req,res)=>{
     res.sendFile(__dirname+"/index.html",{"Content-Type": "text/html"});
@@ -20,6 +21,7 @@ io.on('connection',(socket)=>
     // socket.join('hello');
     // console.log(socket.rooms);
     console.log('a user is connected');
+    socket.broadcast.emit("UserId", uuid());
     socket.on('Bidding Starts',(mesg)=>
     {
         console.log('\n');
