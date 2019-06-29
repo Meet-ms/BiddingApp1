@@ -55,23 +55,94 @@
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
       .content {max-width: 500px;margin: auto}
-      .displayContent {height: 89vh;overflow-y: scroll}
+      .displayContent {height: 450px;overflow-y: scroll}
       /* div[data-type="input"]{display: inline;padding-right: 82%} */
-      i{position: relative !important;font-size: xx-large !important;margin-left: -25px;top: -32px !important;}
+      i{position: relative !important;font-size: 11px !important;margin-left: -25px;top: -32px !important;}
       div[data-type="menu"] {z-index: 5001; margin-right: 37%; width: 31%; margin-top: -20%; overflow-x: hidden;}
     </style>
-  </head>
-  <body class="content" onkeypress="someEvent(event)">
-    <!-- <button id="button">
-        Hey Button
-    </button> -->
-    <div class="displayContent">
-      <ul id="messages"></ul>
-    </div>
+    <style>
+    .container {
+    margin: 0 auto;
+    width: 750px;
+    background: #444753;
+    border-radius: 5px;
+    }
+    .chat {
+  width: 490px;
+  float:left;
+  background: #F2F5F8;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  
+  color: #434651;}
+  
+  .chat-header {
+    padding: 20px;
+    border-bottom: 2px solid white;}
+    .chat-about {
+      float: left;
+      padding-left: 10px;
+      margin-top: 6px;
+    }
+    .chat-right {
+      float: right;
+      padding-left: 10px;
+      margin-top: 6px;
+    }
+    .chat-with {
+      font-weight: bold;
+      font-size: 11px;
+    }
     
-    <!-- <form class="mx-auto" action=""> -->
-      <input type="text" class="form-control" id="m" autocomplete="off" data-emojiable="true" />
-      <button class="btn" id="send" style="position: relative;">Send</button>
-    <!-- </form> -->
+    .chat-num-messages {
+      
+    }
+    
+
+    </style>
+  </head>
+  <body class="content" onkeypress="someEvent(event)" style="background: #000;">
+    <div class="container">
+          <div class="chat">
+            <div class="chat-header clearfix" style="background-color: #c41e22;color: #fff">
+              <div class="chat-about">
+                  <div class="chat-with">Manish Agrawal</div>
+                  <div class="chat-num-messages">9039039144</div>                  
+              </div>
+              <div class="chat-right" style="text-align: center;font-weight: 600;">
+                  <div>Current Renk</div>
+                  <div>1 St</div>
+              </div>
+            </div>
+            <div class="chat-header clearfix" style="background-color: #545050;color: #fff;padding: 0px 20px 5px 20px;">
+                <div class="chat-about">
+                    <div class="chat-with">Bit Closing Time</div>
+                    <div class="chat-num-messages">05:30:00 PM</div>                  
+                </div>
+                <!-- <div class="chat-right" style="text-align: center;font-weight: 600;">
+                    <div>Current Renk</div>
+                    <div>1 St</div>
+                </div> -->
+              </div>
+            <div class="displayContent" style="background-color:#47aa29">
+                <ul id="messages"></ul>
+            </div>
+            <div style="background-color: #323232">
+                <div class="chat-with">Enter Bid Value</div>
+                <div style="overflow: hidden; padding-right: .5em;float:left;">                                    
+                    <input type="text" style="width: 100%;" />                   
+                </div>​
+                <div>
+                <button class="" id="send">BID</button>
+                </div>
+            </div>
+            <!-- <div id="element1" style="float:left;">
+                <input type="text" style="width: 100%;"class="form-control" id="m" autocomplete="off" data-emojiable="true" />
+             </div>
+             <div id="element2" style="padding-left : 20px;float:left;">
+                <button class="btn" id="send" style="position: relative;">Send</button>
+             </div> -->
+          </div>      
+    </div>
   </body>
 </html>
