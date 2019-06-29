@@ -23,16 +23,6 @@ promise.then((connectionObj)=>{
     console.log('Connection failed with error :'+err);
 });
 
-//Connecting account for nodemailer
-var account = nodemailer.createTransport({
-                service : 'outlook',
-                host: 'smtp-mail.outlook.com',
-                auth : 
-                {
-                    user : 'meshah@gep.com',
-                    pass : 'P@55w0rd@123'    
-                }
-            });
 
 module.exports = {
     post : (req)=>{
@@ -48,19 +38,6 @@ module.exports = {
                 return false;
             }
             return true;
-        });
-    },
-    sendEmail : (mailObj)=>{
-        account.sendMail({
-            from : 'meshah@gep.com',
-            to : 'shashank.yadav@gep.com',
-            cc : mailObj.userInfo.UserBasicDetails.Email,
-            subject : mailObj.subject,
-            html : GenerateHTMLForChatHistory(mailObj)
-        }).then((err)=>{
-            if (err) {
-                console.log('Email Sent/Failed with following information :'+JSON.stringify(err));
-            }
         });
     }
 }

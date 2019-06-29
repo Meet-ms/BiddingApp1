@@ -2,7 +2,7 @@ var express = require("express");
 var app = require("express")();
 var http = require('http').Server(app);
 var io = require("socket.io")(http);
-var message = require('./BusinessLogic/message');
+var message = require('./BusinessLogic/Bidding');
 
 app.get('/',(req,res)=>{
     res.sendFile(__dirname+"/index.html",{"Content-Type": "text/html"});
@@ -20,13 +20,13 @@ io.on('connection',(socket)=>
     // socket.join('hello');
     // console.log(socket.rooms);
     console.log('a user is connected');
-    socket.on('chat message',(mesg)=>
+    socket.on('Bidding Starts',(mesg)=>
     {
         console.log('\n');
         console.log('Current users are :%o',io.rooms);
         // console.log('\n');
         message.post(mesg);
-        socket.broadcast.emit("chat message",mesg);        
+        socket.broadcast.emit("",mesg);        
         // socket.broadcast.emit(mesg);
     });
     socket.on('raiseTicket',(mesg)=>{
