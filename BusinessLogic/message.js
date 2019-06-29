@@ -8,7 +8,7 @@ var schema = mongoose.Schema({
     timeStamp : Date
 });
 
-var promise = mongoose.connect('mongodb://SamplePassword:Password123@ds016148.mlab.com:16148/chatdb');
+var promise = mongoose.connect('mongodb+srv://admin:Ravi@30593@cluster0-rm9hw.gcp.mongodb.net/test?retryWrites=true&w=majority');
 
 var model = null;
 promise.then((connectionObj)=>{
