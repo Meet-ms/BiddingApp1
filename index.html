@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" type="text/javascript"></script>
+    <script src="node_modules/socket.io-client/dist/socket.io.js" type="text/javascript"></script>
+    <!-- Adding dummy userContext  -->
+    <script src="http://localhost/MtStorage/smartcontent/tests/mockUserInfo.js" type="text/javascript"></script>
+    <script src="lib/js/config.js" type="text/javascript"></script>
+    <script src="lib/js/util.js" type="text/javascript"></script>
+    <script src="lib/js/jquery.emojiarea.js" type="text/javascript"></script>
+    <script src="lib/js/emoji-picker.js" type="text/javascript"></script>
+    <script src="//twemoji.maxcdn.com/2/twemoji.min.js?11.0"></script>
+    <link href="lib/css/emoji.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <script>
+        $(function () {
+            var socket = io();
+            $('#send').click(function(){
+              $('#messages').append($('<li>').text($('#m').val()));
+              var mesgObj = {
+                userID : userInfo.UserBasicDetails.UserId,
+                message : $('#m').val()
+              };
+              socket.emit('chat message', mesgObj);
+              $('#m').val('');
+              $('div[data-type="input"]').text('');
+              return false;
+            });
+            socket.on('chat message', function(msg){
+              $('#messages').append($('<li>').text(msg.message));
+                twemoji.parse(document.body)
+            });
+            $('#button').on('click',function (event) {
+                socket.emit('button Event','true');
+            });
+
+            window.emojiPicker = new EmojiPicker({
+              emojiable_selector: '[data-emojiable=true]',
+              assetsPath: 'lib/img/',
+              popupButtonClasses: 'fa fa-smile-o'
+            });
+            window.emojiPicker.discover();
+            twemoji.parse(document.body)         
+        });
+    </script>
+    <title>ChatApp</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial;overflow: hidden }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 70%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0;font-size: larger }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+      .content {max-width: 500px;margin: auto}
+      .displayContent {height: 89vh;overflow-y: scroll}
+      /* div[data-type="input"]{display: inline;padding-right: 82%} */
+      i{position: relative !important;font-size: xx-large !important;margin-left: -25px;top: -32px !important;}
+      div[data-type="menu"] {z-index: 5001; margin-right: 37%; width: 31%; margin-top: -20%; overflow-x: hidden;}
+    </style>
+  </head>
+  <body class="content" onkeypress="someEvent(event)">
+    <!-- <button id="button">
+        Hey Button
+    </button> -->
+    <div class="displayContent">
+      <ul id="messages"></ul>
+    </div>
+    
+    <!-- <form class="mx-auto" action=""> -->
+      <input type="text" class="form-control" id="m" autocomplete="off" data-emojiable="true" />
+      <button class="btn" id="send" style="position: relative;">Send</button>
+    <!-- </form> -->
+  </body>
+</html>
