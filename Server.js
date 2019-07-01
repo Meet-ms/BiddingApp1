@@ -9,7 +9,7 @@ app.get('/',(req,res)=>{
     res.sendFile(__dirname+"/index.html",{"Content-Type": "text/html"});
 });
 
-http.listen(3032,()=>{
+http.listen(3033,()=>{
     console.log("Host is active on 3031");
     // message.sendEmail({});
 });
@@ -27,13 +27,13 @@ io.on('connection',(socket)=>
         console.log('\n');
         console.log('Current users are :%o',io.rooms);
         // console.log('\n');
-        var data = message.post(mesg);
-        socket.emit("Azure Data",data);        
+        var data = message.post(mesg, socket);
+        // socket.emit("Azure Data",data);        
         // socket.broadcast.emit(mesg);
     });
-    socket.on('raiseTicket',(mesg)=>{
+    socket.on('close',(req)=>{
         // socket.to('hello').emit('chat message','this is a system generated message');
-        message.sendEmail(mesg);
+        message.dumpData(req);
     });
     // io.to('hello').emit('chat message','Welcome');
     //commit this new comment

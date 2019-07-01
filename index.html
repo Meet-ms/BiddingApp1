@@ -18,29 +18,38 @@
             var socket = io();
             var userId = -1;
             $('#send').click(function(){
-              $('#messages').append($('<li>').text($('#m').val()));
-              var mesgObj = {
-                UserId : userId,
-                ProductId : "1",
-                BidValue : $('#m').val()
+              $('#lastbitvalue').html($('#m').val());
+              if (JSON.parse($('#m').val())>50) 
+              {
+                    var mesgObj = {
+                  UserId : userId,
+                  ProductId : "1",
+                  BidValue : $('#m').val()
+                }
+                socket.emit('Bidding Starts', mesgObj);
+                $('#m').val('');
+                $('div[data-type="input"]').text('');
+                return false;
               }
-              socket.emit('Bidding Starts', mesgObj);
-              $('#m').val('');
-              $('div[data-type="input"]').text('');
-              return false;
+              else
+              {
+                alert("bid value should be greater than base price");
+              }
+              
             });
             socket.on('UserId', function (id) {              
               userId = id;
             })
-            socket.on('Bidding Starts', function(msg){
-              msg.forEach(element => {
-                $('#messages').append($('<li>').text(msg.BidValue));
+            socket.on('Azure Data', function(msg){
+              debugger;
+              msg.value.forEach(element => {
+                $('#messages').append($('<li>').text(element.BidValue));
               });
               
                 
             });
-            $('#button').on('click',function (event) {
-                socket.emit('button Event','true');
+            $('#close').on('click',function (event) {
+                socket.emit('close',{UserId: userId});
             });
 
             window.emojiPicker = new EmojiPicker({
@@ -102,9 +111,6 @@
       font-size: 11px;
     }
     
-    .chat-num-messages {
-      
-    }
     
 
     </style>
@@ -125,8 +131,12 @@
             <div class="chat-header clearfix" style="background-color: #545050;color: #fff;padding: 0px 20px 5px 20px;">
                 <div class="chat-about">
                     <div class="chat-with">Bid Closing Time</div>
-                    <div class="chat-num-messages">05:30:00 PM</div>                  
+                    <div class="chat-num-messages">10:30:00 PM</div>                 
                 </div>
+                <div class="chat-right" style="text-align: center;font-weight: 600;">
+                  <div>Your Last Bid</div>
+                  <div><span id="lastbitvalue">-</span></div>
+              </div>
                 <!-- <div class="chat-right" style="text-align: center;font-weight: 600;">
                     <div>Current Renk</div>
                     <div>1 St</div>
@@ -142,6 +152,7 @@
                 </div>​
                 <div>
                 <button class="" id="send">BID</button>
+                <button class="" id="close">close</button>
                 </div>
             </div>
             <!-- <div id="element1" style="float:left;">

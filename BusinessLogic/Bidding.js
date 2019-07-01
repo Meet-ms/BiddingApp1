@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var ajax = require('ajax-request');
+var ajax = require('request');
 var azureSearch = require('azure-search');
 var uuid = require('uuid/v1');
 
@@ -15,12 +15,13 @@ var azureSearchclient = azureSearch({
 mongoose.Promise = global.Promise;
 
 var schema = mongoose.Schema({
-    userID: Number,
-    messageText : String,
-    timeStamp : Date
+    userId: String,
+    ProductId : String,
+    createDate : Date,
+    BidValue : String
 });
 
-var promise = mongoose.connect('mongodb://SamplePassword:Password123@ds016148.mlab.com:16148/chatdb');
+var promise = mongoose.connect('mongodb://bid:bid1234@ds139665.mlab.com:39665/nodejs-learning');
 
 var searchSchema = {
     name: 'BiddingIndex',
@@ -70,7 +71,7 @@ var model = null;
 promise.then((connectionObj)=>{
     if (connectionObj) 
     {
-        model = connectionObj.model('Mesages',schema,'Mesages');
+        model = connectionObj.model('Bidding',schema,'Bidding');
     }
     else{
         console.log('Connection failed');
@@ -85,7 +86,7 @@ var headers = {
 };
 
 module.exports = {
-    post : (req)=>{
+    post : (req, socket)=>{
         let BiddingObj = {
             id: uuid(),
             ProductId : req.ProductId,
@@ -101,14 +102,46 @@ module.exports = {
             {
                 console.log('Document Added');
                 // search the index (note that multiple arguments can be passed as an array)
-                ajax.download({
-                    url: "https://bidding.search.windows.net/indexes/biddingindex/docs?search=*&$top=5&$orderby=BidValue desc&api-version=2019-05-06",
-                    method: 'GET'
-                },function (err, data){
-                    return data;
+                var options = {
+                    url: 'https://bidding.search.windows.net/indexes/biddingindex/docs?search=*&$top=5&$orderby=BidValue desc&api-version=2019-05-06',
+                    method: 'GET',
+                    headers: headers
                 }
-                )
+                
+                // Start the request
+                ajax(options, function (error, response, body) {
+                    if (!error && response.statusCode == 200) {
+                        // Print out the response body
+                        console.log(body);
+                        socket.emit("Azure Data", JSON.parse(body));
+                    }
+                })  
             }
+        });
+    },
+    dumpData : (req)=>{
+        azureSearchclient.search('biddingindex', {search: req.UserId}, function(err, results, raw){
+            // raw argument contains response body as described here:
+            // https://msdn.microsoft.com/en-gb/library/azure/dn798927.aspx
+            let BidList = [];
+            results.forEach(element => {                
+            
+                let messageObj = {
+                    ProductId : element.ProductId,
+                    UserId : element.UserId,
+                    BidValue : element.BidValue,
+                    createDate : element.dateCreated
+                };
+                BidList.push(messageObj);
+            });
+            model.create(BidList,(err,success)=>{
+                if (err) 
+                {
+                    console.log('Record Insert failed :'+err);
+                    return false;
+                }
+                return true;
+            });
         });
     }
 }
