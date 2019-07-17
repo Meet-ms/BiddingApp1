@@ -20,14 +20,17 @@ io.on('connection',(socket)=>
 {
     // socket.join('hello');
     // console.log(socket.rooms);
-    console.log('a user is connected');
+    console.log('a user is connected');    
+    socket.join('bidding',()=>{});
+    let rooms = Object.keys(socket.rooms);
+    console.log(rooms);
     socket.emit("UserId", uuid());
     socket.on('Bidding Starts',(mesg)=>
     {
         console.log('\n');
         console.log('Current users are :%o',io.rooms);
         // console.log('\n');
-        var data = message.post(mesg, socket);
+        var data = message.post(mesg, io);
         // socket.emit("Azure Data",data);        
         // socket.broadcast.emit(mesg);
     });

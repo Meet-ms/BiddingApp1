@@ -41,7 +41,8 @@
               userId = id;
             })
             socket.on('Azure Data', function(msg){
-              debugger;
+              // debugger;
+              $('#messages').empty();
               msg.value.forEach(element => {
                 $('#messages').append($('<li>').text(element.BidValue));
               });
@@ -49,7 +50,8 @@
                 
             });
             $('#close').on('click',function (event) {
-                socket.emit('close',{UserId: userId});
+                var obj = {UserId: userId};
+                socket.emit('close', obj);
             });
 
             window.emojiPicker = new EmojiPicker({
@@ -61,7 +63,7 @@
             twemoji.parse(document.body)         
         });
     </script>
-    <title>ChatApp</title>
+    <title>BiddingApp</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial;overflow: hidden }
