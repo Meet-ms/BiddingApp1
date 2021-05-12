@@ -10,7 +10,7 @@
     "azure-search": "0.0.21",
     "express": "^4.15.2",
     "mongoose": "^5.1.5",
-    "nodemailer": "^4.6.7",
+    "nodemailer": "^6.4.16",
     "request": "^2.88.0",
     "socket.io": "^2.1.1",
     "typescript": "2.4.1",
